@@ -1,7 +1,6 @@
 <?php
 $filename = "contactos.txt";
 
-// Obtener contactos desde el archivo
 function getContacts($filename) {
     if (!file_exists($filename)) {
         return [];
@@ -9,16 +8,13 @@ function getContacts($filename) {
     return file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 }
 
-// Guardar todos los contactos en el archivo
 function saveContacts($filename, $contacts) {
     file_put_contents($filename, implode(PHP_EOL, $contacts));
 }
 
-// Inicializar variables para el formulario
 $editIndex = isset($_GET['edit']) ? (int)$_GET['edit'] : null;
 $nombre = $contacto = $imagenBase64 = "";
 
-// Si estamos editando, cargar los datos del contacto
 if ($editIndex !== null) {
     $contacts = getContacts($filename);
     if (isset($contacts[$editIndex])) {
@@ -26,33 +22,29 @@ if ($editIndex !== null) {
     }
 }
 
-// Manejar la lógica del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST['accion'] === 'guardar' || $_POST['accion'] === 'editar')) {
     $nombre = trim($_POST['nombre']);
     $contacto = trim($_POST['contacto']);
     $imagenBase64 = '';
 
-    // Procesar la imagen si se subió una
     if (!empty($_FILES['imagen']['tmp_name'])) {
         $imagenData = file_get_contents($_FILES['imagen']['tmp_name']);
-        $imagenBase64 = base64_encode($imagenData); // Convertir a Base64
+        $imagenBase64 = base64_encode($imagenData);
     }
 
     if (!empty($nombre) && !empty($contacto)) {
         $contacts = getContacts($filename);
 
         if ($_POST['accion'] === 'editar' && isset($_POST['index'])) {
-            // Actualizar el contacto existente
+            
             $contacts[(int)$_POST['index']] = $nombre . "|" . $contacto . "|" . $imagenBase64;
         } else {
-            // Agregar un nuevo contacto
+            
             $contacts[] = $nombre . "|" . $contacto . "|" . $imagenBase64;
         }
 
-        // Guardar en el archivo
         saveContacts($filename, $contacts);
 
-        // Redirigir para evitar reenvío del formulario
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     } else {
