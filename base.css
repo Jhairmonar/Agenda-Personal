@@ -1,0 +1,171 @@
+body {
+    font-family: "Open Sans", sans-serif;
+    background-color: #f0f0f0; 
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    height: 100vh;
+    flex-direction: column; 
+    background-image: url("fotos/fondo.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container {
+    background: linear-gradient(#B8E0D2, #F0F4F8);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 30px 3px;
+    text-align: center;
+    width: 80%;
+    max-width: 800px;
+    overflow: hidden;
+    margin-bottom: 60px; 
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: black;
+    font-weight: bold;
+    font-size: 40px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    display: block; 
+    max-height: 300px; 
+}
+
+thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    border-radius: 1px;
+    color: rgb(0, 0, 0);
+    z-index: 1; 
+    padding: 12px 15px;
+    text-align: center;
+}
+
+tbody {
+    display: block;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    table-layout: fixed;
+}
+
+tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    background-color: rgba(238, 238, 238, 0.8);
+    border-radius: 8px;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: white;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid transparent;
+}
+
+tfoot {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    background-color: transparent;  
+}
+
+tfoot td {
+    padding: 15px;
+    text-align: center;
+    border-top: 0px solid transparent; 
+}
+
+a {
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+a.delete-btn, button.delete-btn {
+    background-color: #ffffff; 
+    color: rgb(0, 0, 0); 
+    text-decoration: none; 
+    padding: 8px 12px; 
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
+}
+    .delete-btn {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .delete-btn:hover {
+        color: white;
+        background-color: red;
+        box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+a.edit-btn, button.edit-btn {
+    background-color: #ffffff; 
+    color: rgb(0, 0, 0); 
+    text-decoration: none; 
+    padding: 8px 12px; 
+    border-radius: 5px; 
+    font-size: 14px;
+    margin-left: 5px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
+}
+    .edit-btn {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .edit-btn:hover {
+        color: white;
+        background-color: rgb(75, 173, 235);
+        box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.3);
+    }
+
+button.agregar_contactos {
+    background-color: #ffffff; 
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+    position:relative;
+    bottom: 1px;
+    left: 120px; 
+    transform: translateX(-50%); 
+    z-index: 1000;
+}
+
+button.agregar_contactos:hover {
+    background-color: #ffffff;
+    color: black;
+    box-shadow: 0px 0px 10px 1px #ffffff;
+}
