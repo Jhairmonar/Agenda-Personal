@@ -13,4 +13,5 @@ Este es un proyecto pequeño desarrollado con PHP, HTML y CSS en sus versiones m
 # Funcionamiento
   - En la primera página, el usuario ingresa los datos y estos se almacenan.
   - En la segunda página, se listan los contactos con opciones para editarlos o eliminarlos.
-  - Este proyecto es una base simple que puede expandirse con bases de datos o nuevas funcionalidades en el futuro. 🚀
+
+Este proyecto es una base simple que puede expandirse con bases de datos o nuevas funcionalidades en el futuro. 🚀
