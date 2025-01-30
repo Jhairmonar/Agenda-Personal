@@ -39,10 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
             
             $contacts[(int)$_POST['index']] = $nombre . "|" . $contacto . "|" . $imagenBase64;
         } else {
-            
+        
             $contacts[] = $nombre . "|" . $contacto . "|" . $imagenBase64;
         }
 
+        
         saveContacts($filename, $contacts);
 
         header("Location: " . $_SERVER['PHP_SELF']);
@@ -81,14 +82,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
                 <br>
                 <input type="text" id="contacto" name="contacto" value="<?= htmlspecialchars($contacto) ?>" placeholder="Ingrese el contacto" required>
                 <br>
-                <label for="imagen" id="Img_perfil">Imagen de Perfil:</label>
-                <br>
+                <label class="caja_subida">
+                    <span class="plus">+</span>
+                    <input type="file" id="imagen" name="imagen" accept="image/*">
+                </label>
                 <?php if ($imagenBase64): ?>
                     <img src="data:image/png;base64,<?= $imagenBase64 ?>" alt="Imagen actual" style="width: 50px; height: 50px; border-radius: 50%;">
                     <br>
                 <?php endif; ?>
-                <input type="file" id="imagen" name="imagen" accept="image/*">
-                <br>
                 <button type="submit" class="boton" id="1"><?= $editIndex !== null ? 'Actualizar' : 'Guardar' ?></button>
             </form>
 
