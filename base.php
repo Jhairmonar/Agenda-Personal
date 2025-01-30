@@ -101,6 +101,7 @@ $contacts = getContacts($filename);
             $('#contactTable').DataTable({
                 "language": {
                     "sProcessing": "Procesando...",
+                    "sLengthMenu": "",
                     "sZeroRecords": "No se encontraron resultados",
                     "sEmptyTable": "Ningún dato disponible en esta tabla",
                     "sInfo": "",
