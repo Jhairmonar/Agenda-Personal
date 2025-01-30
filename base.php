@@ -24,6 +24,19 @@ function saveContacts($filename, $contacts) {
     file_put_contents($filename, implode(PHP_EOL, $lines));
 }
 
+if (isset($_POST['update'])) {
+    $index = (int)$_POST['index'];
+    $field = $_POST['field'];
+    $value = $_POST['value'];
+
+    $contacts = getContacts($filename);
+    if (isset($contacts[$index])) {
+        $contacts[$index][$field] = $value;
+        saveContacts($filename, $contacts);
+    }
+    exit;
+}
+
 if (isset($_GET['delete'])) {
     $index = (int)$_GET['delete'];
     $contacts = getContacts($filename);
@@ -46,6 +59,8 @@ $contacts = getContacts($filename);
     <title>Tabla de Contactos</title>
     <link rel="stylesheet" href="base.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -67,8 +82,8 @@ $contacts = getContacts($filename);
                 <?php else: ?>
                     <?php foreach ($contacts as $index => $contact): ?>
                         <tr>
-                            <td><?= htmlspecialchars($contact['name']) ?></td>
-                            <td><?= htmlspecialchars($contact['number']) ?></td>
+                            <td contenteditable="true" data-index="<?= $index ?>" data-field="name" class="editable"> <?= htmlspecialchars($contact['name']) ?> </td>
+                            <td contenteditable="true" data-index="<?= $index ?>" data-field="number" class="editable"> <?= htmlspecialchars($contact['number']) ?> </td>
                             <td>
                                 <?php if (!empty($contact['profile'])): ?>
                                     <img src="data:image/png;base64,<?= htmlspecialchars($contact['profile']) ?>" alt="Perfil" style="width: 50px; height: 50px; border-radius: 50%;">
@@ -78,36 +93,33 @@ $contacts = getContacts($filename);
                             </td>
                             <td>
                                 <a href="?delete=<?= $index ?>" class="delete-btn">Eliminar</a>
-                                <a href="index.php?edit=<?= $index ?>" class="edit-btn">Editar</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4" class="footer-row">
-                        <button class="agregar_contactos" onclick="location.href='index.php'">Agregar Nuevo Contacto</button>
-                    </td>
-                </tr>
-            </tfoot>
         </table>
     </div>
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            $('.editable').on('blur', function() {
+                var index = $(this).data('index');
+                var field = $(this).data('field');
+                var value = $(this).text().trim();
+                $.post('', { update: true, index: index, field: field, value: value });
+            });
+            
             $('#contactTable').DataTable({
                 "language": {
                     "sProcessing": "Procesando...",
-                    "sLengthMenu": "",
                     "sZeroRecords": "No se encontraron resultados",
                     "sEmptyTable": "Ningún dato disponible en esta tabla",
-                    "sInfo": "",
-                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                    "sInfoFiltered": "(filtrado de un total de MAX registros)",
                     "sSearch": "Buscar:",
+                    "sLengthMenu": "Mostrar _MENU_ contactos",
+                    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando 0 a 0 de 0 registros",
+                    "sInfoFiltered": "(filtrado de _MAX_ registros en total)",
                     "oPaginate": {
                         "sFirst": "Primero",
                         "sLast": "Último",
@@ -115,8 +127,8 @@ $contacts = getContacts($filename);
                         "sPrevious": "Anterior"
                     }
                 },
-                "pageLength": 5,
-                "lengthMenu": [[3, 5,10, -1], [3, 5,10, "Todos"]],
+                "pageLength": 3,
+                "lengthMenu": [[2,3, 5], [2,3, 5]],
                 "order": [[0, "asc"]]
             });
         });
