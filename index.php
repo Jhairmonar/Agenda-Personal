@@ -82,10 +82,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
                 <br>
                 <input type="text" id="contacto" name="contacto" value="<?= htmlspecialchars($contacto) ?>" placeholder="Ingrese el contacto" required>
                 <br>
-                <label class="caja_subida">
+                <label class="caja_subida" id="drop-area">
                     <span class="plus">+</span>
                     <input type="file" id="imagen" name="imagen" accept="image/*">
+                    <img id="preview" style="display: none; width: 100px; height: 100px; border-radius: 50%; margin-top: 10px;">
                 </label>
+
                 <?php if ($imagenBase64): ?>
                     <img src="data:image/png;base64,<?= $imagenBase64 ?>" alt="Imagen actual" style="width: 50px; height: 50px; border-radius: 50%;">
                     <br>
@@ -98,5 +100,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
             </form>
         </section>
     </main>
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dropArea = document.getElementById("drop-area");
+            const fileInput = document.getElementById("imagen");
+            const preview = document.getElementById("preview");
+
+            ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+                dropArea.addEventListener(eventName, (e) => e.preventDefault());
+            });
+
+            ["dragenter", "dragover"].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => dropArea.style.backgroundColor = "#e0e0e0");
+            });
+
+            ["dragleave", "drop"].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => dropArea.style.backgroundColor = "transparent");
+            });
+
+            dropArea.addEventListener("drop", function (e) {
+                const file = e.dataTransfer.files[0];
+
+                if (file && file.type.startsWith("image/")) {
+                    fileInput.files = e.dataTransfer.files;
+
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        preview.src = event.target.result;
+                        preview.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            fileInput.addEventListener("change", function () {
+                const file = fileInput.files[0];
+                if (file && file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        preview.src = event.target.result;
+                        preview.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+</script>
+
 </body>
 </html>
