@@ -22,6 +22,8 @@ if ($editIndex !== null) {
     }
 }
 
+$mensajeError = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST['accion'] === 'guardar' || $_POST['accion'] === 'editar')) {
     $nombre = trim($_POST['nombre']);
     $contacto = trim($_POST['contacto']);
@@ -34,22 +36,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
 
     if (!empty($nombre) && !empty($contacto)) {
         $contacts = getContacts($filename);
+        $nombresExistentes = array_map(function ($line) {
+            return strtolower(explode('|', $line)[0]); // Convertir el nombre a minúsculas
+        }, $contacts);
 
-        if ($_POST['accion'] === 'editar' && isset($_POST['index'])) {
-            
-            $contacts[(int)$_POST['index']] = $nombre . "|" . $contacto . "|" . $imagenBase64;
+        if (in_array(strtolower($nombre), $nombresExistentes)) {
+            $mensajeError = "El usuario ya está ingresado.";
         } else {
-        
-            $contacts[] = $nombre . "|" . $contacto . "|" . $imagenBase64;
+            if ($_POST['accion'] === 'editar' && isset($_POST['index'])) {
+                $contacts[(int)$_POST['index']] = $nombre . "|" . $contacto . "|" . $imagenBase64;
+            } else {
+                $contacts[] = $nombre . "|" . $contacto . "|" . $imagenBase64;
+            }
+
+            saveContacts($filename, $contacts);
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
         }
-
-        
-        saveContacts($filename, $contacts);
-
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
     } else {
-        echo "<p style='color: red;'>Por favor, complete todos los campos.</p>";
+        $mensajeError = "Por favor, complete todos los campos.";
     }
 }
 ?>
@@ -61,6 +66,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda Personal</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            <?php if (!empty($mensajeError)): ?>
+                alert("<?= $mensajeError ?>");
+            <?php endif; ?>
+        });
+    </script>
 </head>
 <body>
     <header>
@@ -92,60 +104,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
                     <img src="data:image/png;base64,<?= $imagenBase64 ?>" alt="Imagen actual" style="width: 50px; height: 50px; border-radius: 50%;">
                     <br>
                 <?php endif; ?>
-                <button type="submit" class="boton" id="1"><?= $editIndex !== null ? 'Actualizar' : 'Guardar' ?></button>
+                <button type="submit" class="boton"><?= $editIndex !== null ? 'Actualizar' : 'Guardar' ?></button>
             </form>
 
             <form class="enlace_contactos" action="base.php" method="get">
-                <button type="submit" class="boton" id="2">Ver Contactos</button>
+                <button type="submit" class="boton">Ver Contactos</button>
             </form>
         </section>
     </main>
-<script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const dropArea = document.getElementById("drop-area");
-            const fileInput = document.getElementById("imagen");
-            const preview = document.getElementById("preview");
-
-            ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
-                dropArea.addEventListener(eventName, (e) => e.preventDefault());
-            });
-
-            ["dragenter", "dragover"].forEach(eventName => {
-                dropArea.addEventListener(eventName, () => dropArea.style.backgroundColor = "#e0e0e0");
-            });
-
-            ["dragleave", "drop"].forEach(eventName => {
-                dropArea.addEventListener(eventName, () => dropArea.style.backgroundColor = "transparent");
-            });
-
-            dropArea.addEventListener("drop", function (e) {
-                const file = e.dataTransfer.files[0];
-
-                if (file && file.type.startsWith("image/")) {
-                    fileInput.files = e.dataTransfer.files;
-
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        preview.src = event.target.result;
-                        preview.style.display = "block";
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            fileInput.addEventListener("change", function () {
-                const file = fileInput.files[0];
-                if (file && file.type.startsWith("image/")) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        preview.src = event.target.result;
-                        preview.style.display = "block";
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
-</script>
-
 </body>
 </html>
