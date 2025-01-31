@@ -100,6 +100,13 @@ $contacts = getContacts($filename);
             </tbody>
         </table>
     </div>
+    <div>
+        <tr>
+            <td colspan="4" class="footer-row">
+                <button class="agregar_contactos" onclick="location.href='index.php'">Agregar Nuevo Contacto</button>
+            </td>
+        </tr>
+    </div>
 
     <script>
         $(document).ready(function() {
